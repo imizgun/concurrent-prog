@@ -1,39 +1,29 @@
-use std::{
-    fs::{self},
-    io::{self, stdin},
-    process
+use std::{fs::{self}, io::{self}, process
 };
 
-use secondLab::{BUFFER, CLIENT, ESC, LOCKFILE, create_atomic, wait_for_response, write_to_file_clean};
+use secondLab::{BUFFER, CLIENT, LOCKFILE, assemble_message, create_atomic, remove_on_exit, wait_for_response, write_to_file_clean};
 
 fn main() -> io::Result<()> {
     let id = process::id();
     let client_file = format!("{}_{}", CLIENT, id);
 
     write_to_file_clean(&client_file, "")?;
+    remove_on_exit(client_file.clone());
 
     println!("Client {}, write messages: ", id);
 
     let mut input = String::new();
-    input.push_str(&client_file);
+    input.push_str(&format!("{}\n", client_file));
 
-    for line in stdin().lines() {
-        let str = line?;
+    assemble_message(&mut input)?;
 
-        if str == "end" {
-            break;
-        } else {
-            input.push_str(&str);
-            input.push('\n');
-        }
-    }
-    input.push(ESC as char);
+    println!("\nServer response: ");
 
     create_atomic(LOCKFILE)?;
 
     fs::write(BUFFER, &input)?;
 
-    let res = wait_for_response(BUFFER)?;
+    let res = wait_for_response(&client_file)?;
 
     println!("{}", res);
 

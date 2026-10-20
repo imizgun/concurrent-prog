@@ -1,4 +1,4 @@
-use std::{fs::{self, OpenOptions}, io::{self, ErrorKind, Write}, thread::{self, sleep}, time::Duration};
+use std::{fs::{self, OpenOptions}, io::{self, ErrorKind, Write, stdin}, thread::{self, sleep}, time::Duration};
 
 pub const BUFFER: &'static str = "buffer";
 pub const LOCKFILE: &'static str = "lockfile";
@@ -39,4 +39,28 @@ pub fn create_atomic(path: &str) -> io::Result<()> {
             Err(e) => return Err(e),
         }
     }
+}
+
+
+pub fn assemble_message(message: &mut String) -> io::Result<()> {
+    for line in stdin().lines() {
+        let str = line?;
+
+        if str == "end" {
+            break;
+        } else {
+            message.push_str(&str);
+            message.push('\n');
+        }
+    }
+    message.push(ESC as char);
+    Ok(())
+}
+
+pub fn remove_on_exit(path: String) {
+    ctrlc::set_handler(move || {
+        let _ = fs::remove_file(&path);
+        std::process::exit(130);
+    })
+    .expect("Nie udało się ustawić obsługi sygnału");
 }

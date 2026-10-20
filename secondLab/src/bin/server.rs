@@ -1,10 +1,11 @@
-use std::io;
+use std::{fs, io};
 
-use secondLab::{BUFFER, CLIENT, wait_for_response, write_to_file_clean};
+use secondLab::{BUFFER, CLIENT, LOCKFILE, assemble_message, remove_on_exit, wait_for_response, write_to_file_clean};
 
 fn main() -> io::Result<()> {
+    println!("Server runs\n");
+    remove_on_exit(LOCKFILE.to_string());
     write_to_file_clean(BUFFER, "")?;
-    let mut client_name = String::new();
     
     loop {
         let buffer_content = wait_for_response(BUFFER)?;
@@ -16,14 +17,20 @@ fn main() -> io::Result<()> {
                 continue;
             }
 
-            client_name = first_line.to_string();
+            let client_name = first_line.to_string();
 
-            let messages = lines.map(|x| x.to_string()).collect::<Vec<String>>();
-            println!("{:?}", messages);
+            println!("Clinet {} says:\n{}", client_name, lines.map(|x| format!("{}\n", x)).collect::<String>());
 
-            println!()
+            println!();
 
-            
+            let mut input = String::new();
+
+            assemble_message(&mut input)?;
+
+            write_to_file_clean(&client_name, &input)?;
+            write_to_file_clean(BUFFER, "")?;
+
+            fs::remove_file(LOCKFILE)?;
         }
     }
 }
