@@ -1,4 +1,9 @@
-use std::{fs::{self, OpenOptions}, io::{self, ErrorKind, Write, stdin}, thread::{self, sleep}, time::Duration};
+use std::{
+    fs::{self, OpenOptions},
+    io::{self, ErrorKind, Write, stdin},
+    thread::{self, sleep},
+    time::Duration,
+};
 
 pub const BUFFER: &'static str = "buffer";
 pub const LOCKFILE: &'static str = "lockfile";
@@ -17,17 +22,14 @@ pub fn wait_for_response(path: &str) -> io::Result<String> {
         if let Some(n) = content.iter().position(|b| *b == ESC) {
             return Ok(String::from_utf8_lossy(&content[..n]).into_owned());
         }
+
         thread::sleep(Duration::from_millis(500));
     }
 }
 
 pub fn create_atomic(path: &str) -> io::Result<()> {
     loop {
-        match OpenOptions::new()
-            .write(true)
-            .create_new(true)
-            .open(path)
-        {
+        match OpenOptions::new().write(true).create_new(true).open(path) {
             Ok(mut f) => {
                 writeln!(f, "{}", std::process::id())?;
                 return Ok(());
@@ -40,7 +42,6 @@ pub fn create_atomic(path: &str) -> io::Result<()> {
         }
     }
 }
-
 
 pub fn assemble_message(message: &mut String) -> io::Result<()> {
     for line in stdin().lines() {

@@ -1,7 +1,13 @@
-use std::{fs::{self}, io::{self}, process
+use std::{
+    fs::{self},
+    io::{self},
+    process,
 };
 
-use secondLab::{BUFFER, CLIENT, LOCKFILE, assemble_message, create_atomic, remove_on_exit, wait_for_response, write_to_file_clean};
+use secondLab::{
+    BUFFER, CLIENT, LOCKFILE, assemble_message, create_atomic, remove_on_exit, wait_for_response,
+    write_to_file_clean,
+};
 
 fn main() -> io::Result<()> {
     let id = process::id();
@@ -10,7 +16,7 @@ fn main() -> io::Result<()> {
     write_to_file_clean(&client_file, "")?;
     remove_on_exit(client_file.clone());
 
-    println!("Client {}, write messages: ", id);
+    println!("Client {}, write messages: \n", id);
 
     let mut input = String::new();
     input.push_str(&format!("{}\n", client_file));
