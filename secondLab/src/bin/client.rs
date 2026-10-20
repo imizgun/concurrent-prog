@@ -1,6 +1,10 @@
-use std::{fs, io::{self, ErrorKind}, process, str::Lines, thread, time::Duration};
+use std::{
+    fs::{self},
+    io::{self, stdin},
+    process
+};
 
-use secondLab::{BUFFER, CLIENT, LOCKFILE, create_atomic, write_to_file_clean};
+use secondLab::{BUFFER, CLIENT, ESC, LOCKFILE, create_atomic, wait_for_response, write_to_file_clean};
 
 fn main() -> io::Result<()> {
     let id = process::id();
@@ -11,41 +15,27 @@ fn main() -> io::Result<()> {
     println!("Client {}, write messages: ", id);
 
     let mut input = String::new();
+    input.push_str(&client_file);
 
-    _ = io::stdin()
-        .read_line(&mut input)
-        .expect("Error when reading input");
+    for line in stdin().lines() {
+        let str = line?;
 
-    // client message
-    while input != "end\n" {
-        create_atomic(LOCKFILE)?;
-
-        fs::write(BUFFER, &input)?;
-
-        input.clear();
-
-        _ = io::stdin()
-            .read_line(&mut input)
-            .expect("Error when reading input");
+        if str == "end" {
+            break;
+        } else {
+            input.push_str(&str);
+            input.push('\n');
+        }
     }
+    input.push(ESC as char);
+
+    create_atomic(LOCKFILE)?;
 
     fs::write(BUFFER, &input)?;
 
-    let mut last_line = String::new();
+    let res = wait_for_response(BUFFER)?;
 
-    // waiting for the response
-    while last_line != "end\n" {
-        let str = fs::read_to_string(&client_file);
-
-        match str {
-            Ok(s) => last_line = s.lines().last().unwrap_or_default().to_string(),
-            Err(_) => {
-                thread::sleep(Duration::from_secs(1));
-            }
-        }
-        
-        
-    }
+    println!("{}", res);
 
     fs::remove_file(client_file)?;
 
