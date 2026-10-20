@@ -1,6 +1,6 @@
 use std::{fs, io};
 
-use secondLab::{
+use second_lab::{
     BUFFER, CLIENT, LOCKFILE, assemble_message, wait_for_response, write_to_file_clean,
 };
 

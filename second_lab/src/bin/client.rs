@@ -4,7 +4,7 @@ use std::{
     process,
 };
 
-use secondLab::{
+use second_lab::{
     BUFFER, CLIENT, LOCKFILE, assemble_message, create_atomic, remove_on_exit, wait_for_response,
     write_to_file_clean,
 };
