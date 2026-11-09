@@ -1,7 +1,7 @@
-#include <cstdio>
 #include <cstdlib>
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <string>
 
 using namespace std;
@@ -14,11 +14,15 @@ int main(int argc, char** argv) {
     }
 
     ifstream startFile(argv[1]);
-    string line, content;
-    
-    while (getline(startFile, line)) {
-        content += line + '\n';
+
+    if (!startFile.is_open()) {
+        cout << "File wasn't open";
+        exit(1);
     }
+    
+    stringstream buffer;
+    buffer << startFile.rdbuf();
+    string content = buffer.str();
 
     startFile.close();
 
