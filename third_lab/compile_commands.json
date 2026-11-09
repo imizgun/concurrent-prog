@@ -1,0 +1,6 @@
+[
+{
+  "directory": "/home/vkabaczko/Ug/concurrent-prog/third_lab",
+  "arguments": ["/etc/profiles/per-user/vkabaczko/bin/g++", "-c", "-m64", "-fvisibility=hidden", "-fvisibility-inlines-hidden", "-O3", "-std=c++20", "-DNDEBUG", "-o", "build/.objs/third_lab/linux/x86_64/release/src/main.cpp.o", "src/main.cpp"],
+  "file": "src/main.cpp"
+}]

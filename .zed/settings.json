@@ -1,0 +1,10 @@
+{
+  "lsp": {
+    "clangd": {
+      "binary": {
+        // Replaces the global --query-driver: with it the Nix clangd wrapper stops adding system include paths.
+        "arguments": ["--background-index"]
+      }
+    }
+  }
+}
