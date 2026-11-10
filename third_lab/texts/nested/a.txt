@@ -1,0 +1,6 @@
+kot ma kota
+\input{b.txt}
+kot
+\input{c.txt}
+\input{b.txt}
+koty kot

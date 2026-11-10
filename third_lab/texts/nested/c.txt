@@ -1,0 +1,3 @@
+\input{d.txt}
+\input{d.txt}
+Kot kot

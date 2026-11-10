@@ -13,7 +13,7 @@ pub const ESC: u8 = 0x18;
 pub fn write_to_file_clean(file_path: &str, contents: &str) -> io::Result<()> {
     fs::write(file_path, contents)?;
     Ok(())
-}
+    }
 
 pub fn wait_for_response(path: &str) -> io::Result<String> {
     loop {
