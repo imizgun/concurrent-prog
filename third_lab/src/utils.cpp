@@ -3,20 +3,6 @@
 
 using namespace std;
 
-int countSubstr(const string& str, const string& sub) {
-    if (sub.empty()) return 0;
-
-    int count = 0;
-    size_t pos = 0;
-
-    while ((pos = str.find(sub, pos)) != string::npos) {
-        count++;
-        pos += sub.length();
-    }
-
-    return count;
-}
-
 static bool isWordChar(unsigned char c) {
     return isalnum(c) || c >= 0x80;
 }

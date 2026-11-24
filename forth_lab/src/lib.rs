@@ -72,7 +72,10 @@ impl Drop for FifoGuard {
 }
 
 pub fn open_queue_for_reading(path: &Path) -> io::Result<File> {
-    OpenOptions::new().read(true).write(true).open(path)
+    OpenOptions::new()
+        .read(true)
+        .write(true)
+        .open(path)
 }
 
 /// `u32 (length) | i32 (id) | path`
@@ -164,7 +167,6 @@ pub fn send_frame(path: &Path, frame: &[u8]) -> io::Result<()> {
 
 static STOP: AtomicBool = AtomicBool::new(false);
 
-/// Jedyne, co wolno robić w obsłudze sygnału — ustawić flagę.
 extern "C" fn on_sigusr1(_: c_int) {
     STOP.store(true, Ordering::SeqCst);
 }
